@@ -1,9 +1,10 @@
 import 'package:amazon_clone/common/widgets/custom_button.dart';
 import 'package:amazon_clone/common/widgets/custom_textfield.dart';
 import 'package:amazon_clone/constants/global_variables.dart';
+import 'package:amazon_clone/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-enum Auth { singin, singup }
+enum Auth { signin, signup }
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -14,13 +15,13 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  final _singUpFormKey = GlobalKey<FormState>();
-  final _singInFormKey = GlobalKey<FormState>();
-  Auth _auth = Auth.singup;
-
+  Auth _auth = Auth.signup;
+  AuthService authService = AuthService();
+  final _signUpFormKey = GlobalKey<FormState>();
+  final _signInFormKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _nameCotroller = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   @override
   void dispose() {
@@ -28,7 +29,16 @@ class _AuthScreenState extends State<AuthScreen> {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _nameCotroller.dispose();
+    _nameController.dispose();
+  }
+
+  void signUpUser() {
+    authService.signUpUser(
+      context: context,
+      name: _nameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
   }
 
   @override
@@ -47,14 +57,17 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
 
               ListTile(
-                tileColor: _auth == Auth.singup? GlobalVariables.backgroundColor: GlobalVariables.greyBackgroundCOlor,
+                tileColor:
+                    _auth == Auth.signup
+                        ? GlobalVariables.backgroundColor
+                        : GlobalVariables.greyBackgroundCOlor,
                 title: const Text(
                   'Create Account',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Radio(
                   activeColor: GlobalVariables.secondaryColor,
-                  value: Auth.singup,
+                  value: Auth.signup,
                   groupValue: _auth,
                   onChanged: (Auth? val) {
                     setState(() {
@@ -63,16 +76,16 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                 ),
               ),
-              if (_auth == Auth.singup)
+              if (_auth == Auth.signup)
                 Container(
                   padding: EdgeInsets.all(8),
                   color: GlobalVariables.backgroundColor,
                   child: Form(
-                    key: _singUpFormKey,
+                    key: _signUpFormKey,
                     child: Column(
                       children: [
                         CustomTextField(
-                          controller: _nameCotroller,
+                          controller: _nameController,
                           hintText: 'Name',
                         ),
                         SizedBox(height: 10),
@@ -86,20 +99,30 @@ class _AuthScreenState extends State<AuthScreen> {
                           hintText: 'Password',
                         ),
                         SizedBox(height: 10),
-                        CustomButton(text: 'Sign Up', onTap: () {}),
+                        CustomButton(
+                          text: 'Sign Up',
+                          onTap: () {
+                            if (_signUpFormKey.currentState!.validate()) {
+                              signUpUser();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
                 ),
               ListTile(
-                tileColor: _auth == Auth.singin? GlobalVariables.backgroundColor: GlobalVariables.greyBackgroundCOlor,
+                tileColor:
+                    _auth == Auth.signin
+                        ? GlobalVariables.backgroundColor
+                        : GlobalVariables.greyBackgroundCOlor,
                 title: const Text(
                   'Sign-In',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 leading: Radio(
                   activeColor: GlobalVariables.secondaryColor,
-                  value: Auth.singin,
+                  value: Auth.signin,
                   groupValue: _auth,
                   onChanged: (Auth? val) {
                     setState(() {
@@ -108,15 +131,14 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                 ),
               ),
-              if (_auth == Auth.singin)
+              if (_auth == Auth.signin)
                 Container(
                   padding: EdgeInsets.all(8),
                   color: GlobalVariables.backgroundColor,
                   child: Form(
-                    key: _singInFormKey,
+                    key: _signInFormKey,
                     child: Column(
                       children: [
-
                         CustomTextField(
                           controller: _emailController,
                           hintText: 'Email',
