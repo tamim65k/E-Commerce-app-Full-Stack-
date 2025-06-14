@@ -13,10 +13,10 @@ void httpErrorHandle({
       onSuccess();
       break;
     case 400:
-      showSnackbar(context, jsonDecode(response.body)['msg']);
+      showSnackbar(context, (response.body));
       break;
     case 500:
-      showSnackbar(context, 'Error, please try again later.');
+      showSnackbar(context, (response.body));
       break;
     default:
       showSnackbar(context, response.body);

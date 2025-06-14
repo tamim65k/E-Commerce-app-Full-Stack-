@@ -11,7 +11,10 @@ authRouter.post("/api/signup", async (req, res) => {
         //validation, same email
         const existingUser = await User.findOne({ email })
         if (existingUser) {
-            return res.status(400).json({ msg: "User already exists", })
+            return res.status(400).json({ msg: "User already exists. Please change your email address.", })
+        }
+        if (password.length < 6) {
+            return res.status(400).json({ msg: "Password must be at least 6 characters long." });
         }
 
         //hash the password
