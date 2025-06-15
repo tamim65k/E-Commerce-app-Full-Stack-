@@ -8,7 +8,7 @@ const mongoose = require("mongoose")
 //init
 const PORT = 3000
 const app = express()
-const DB = "mongodb+srv://oneclassnetfan:qUoU6JWqnv3TeNbd@cluster0.bgphpk8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const DB = "Your MongoDB Connection String Here" // replace with your MongoDB connection string
 
 
 //middelWare
